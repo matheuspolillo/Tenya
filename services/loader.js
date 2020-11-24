@@ -46,19 +46,19 @@ class Loader {
 	}
 
 	startServer() {
-		this.module.Server = this.export('server');
-		this.module.Server.listen();
+		this.module.server = this.export('server');
+		this.module.server.listen();
 	}
 
 	startMongo() {
-		this.module.Mongo = this.export('connection');
+		this.module.mongo = this.export('connection');
 		const mongoConnectionObj = {
 			name: 'smppServer',
 			host: process.env.MONGO_HOST,
 			base: process.env.MONGO_BASE,
 			auth: process.env.MONGO_AUTH
 		};
-		this.module.Mongo.createConnection('mongo', mongoConnectionObj);
+		this.module.mongo.createConnection('mongo', mongoConnectionObj);
 	}
 }
 

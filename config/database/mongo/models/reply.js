@@ -4,7 +4,7 @@ class Reply {
 	}
 
 	buildModel() {
-		this.Mongo = Loader.getModule('Mongo').getConnection('mongo', 'smppServer');
+		this.Mongo = Loader.getModule('mongo').getConnection('mongo', 'smppServer');
 		const Schema = this.Mongo.exportSchema();
 		const ReplySchema = new Schema({
 			queue_id: String,

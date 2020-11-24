@@ -4,7 +4,7 @@ class MongoQuery {
 	}
 
 	setConnection(base) {
-		this.Mongo = Loader.getModule('Mongo').getConnection('mongo', base);
+		this.Mongo = Loader.getModule('mongo').getConnection('mongo', base);
 	}
 }
 

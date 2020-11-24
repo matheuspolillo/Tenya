@@ -4,7 +4,7 @@ class FakeGateway {
 	}
 
 	buildModel() {
-		this.Mongo = Loader.getModule('Mongo').getConnection('mongo', 'smppServer');
+		this.Mongo = Loader.getModule('mongo').getConnection('mongo', 'smppServer');
 		const Schema = this.Mongo.exportSchema();
 		const FakeGatewaySchema = new Schema({
 			queue_id: String,
