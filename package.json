@@ -1,0 +1,20 @@
+{
+  "name": "Tenya",
+  "version": "1.0.0",
+  "description": "My own server & client smpp version for testing",
+  "main": "boot.js",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "moment-timezone": "^0.5.32",
+    "mongoose": "^5.10.15",
+    "restify": "^8.5.1",
+    "smpp": "^0.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node boot.js"
+  },
+  "author": "Matheus Marques Polillo",
+  "license": "MIT"
+}

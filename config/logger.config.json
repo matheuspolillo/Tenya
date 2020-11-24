@@ -1,0 +1,7 @@
+{
+	"types": {
+		"ServerLog": "#0099FF",
+		"DatabaseLog": "#FFAE00",
+		"ProcessLog": "#502473"
+	}
+}
