@@ -11,6 +11,12 @@ class Loader {
 		this.replyModel = require(`${__base}/config/database/mongo/models/reply.js`);
 		this.reportModel = require(`${__base}/config/database/mongo/models/report.js`);
 		this.mongoQuery = require(`${__base}/config/database/mongo/mongoQuery.js`);
+		this.security = require(`${__base}/services/security.js`);
+		this.smppServer = require(`${__base}/app/smpp/server/smppServer.js`);
+		this.replySmpp = require(`${__base}/app/smpp/server/receiver/replySmpp.js`);
+		this.reportSmpp = require(`${__base}/app/smpp/server/receiver/reportSmpp.js`);
+		this.transmitterSmpp = require(`${__base}/app/smpp/server/transmitter/transmitterSmpp.js`);
+		this.smppClient = require(`${__base}/app/smpp/client/smppClient.js`);
 		this.module = {
 			logger: null,
 			server: null,
@@ -22,7 +28,13 @@ class Loader {
 			queueModel: null,
 			replyModel: null,
 			reportModel: null,
-			mongoQuery: null
+			mongoQuery: null,
+			security: null,
+			smppServer: null,
+			replySmpp: null,
+			reportSmpp: null,
+			transmitterSmpp: null,
+			smppClient: null
 		};
 	}
 
@@ -59,6 +71,16 @@ class Loader {
 			auth: process.env.MONGO_AUTH
 		};
 		this.module.mongo.createConnection('mongo', mongoConnectionObj);
+	}
+
+	startSmppServer() {
+		this.module.smppServer = this.export('smppServer');
+		this.module.smppServer.openConnection();
+	}
+
+	startSmppClient(type) {
+		this.module.smppClient = this.export('smppClient');
+		setTimeout(() => { this.module.smppClient.connect(type); }, process.env.SMPP_CLIENT_INIT * 1000);
 	}
 }
 

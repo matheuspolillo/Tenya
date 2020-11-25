@@ -5,3 +5,5 @@ global.Logger = Loader.export('logger', { configPath: `${__base}/config/logger.c
 
 Loader.startServer();
 Loader.startMongo();
+Loader.startSmppServer();
+Loader.startSmppClient('all');

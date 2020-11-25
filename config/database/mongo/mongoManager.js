@@ -8,7 +8,7 @@ class MongoManager {
 		this.base = credentials.base;
 		this.auth = credentials.auth;
 		this.connectionString = `mongodb://${this.host}/${this.base}?connectTimeoutMS=1200000&socketTimeoutMS=1200000&poolSize=20`;
-		this.retryCount = { error: 3, disconnected: 3 };
+		this.retryCount = { error: process.env.TRY_MONGO_ERROR_COUNT, disconnected: process.env.TRY_MONGO_DISCONNECT_COUNT };
 		this.models = new Object();
 		this.modelManager = Loader.export('modelManager');
 	}
