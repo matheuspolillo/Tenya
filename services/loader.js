@@ -12,6 +12,7 @@ class Loader {
 		this.reportModel = require(`${__base}/config/database/mongo/models/report.js`);
 		this.mongoQuery = require(`${__base}/config/database/mongo/mongoQuery.js`);
 		this.security = require(`${__base}/services/security.js`);
+		this.parser = require(`${__base}/services/parser.js`);
 		this.smppServer = require(`${__base}/app/smpp/server/smppServer.js`);
 		this.replySmpp = require(`${__base}/app/smpp/server/receiver/replySmpp.js`);
 		this.reportSmpp = require(`${__base}/app/smpp/server/receiver/reportSmpp.js`);
@@ -32,6 +33,7 @@ class Loader {
 			reportModel: null,
 			mongoQuery: null,
 			security: null,
+			parser: null,
 			smppServer: null,
 			replySmpp: null,
 			reportSmpp: null,

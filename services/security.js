@@ -10,12 +10,12 @@ class Security {
 		};
 	}
 
-	validateSmppConnection(session) {
-		let usernameOk = false;
-		let passwordOk = false;
+	validateSmppConnection(pdu) {
 		let securityPermission = false;
-		if (session.hasOwnProperty('system_id') && session['session_id'] != null) {
-			if (session.hasOwnProperty('password') && session['password'] != null) {
+		if (pdu.hasOwnProperty('system_id') && pdu['system_id'] != null) {
+			let username = pdu['system_id'];
+			if (pdu.hasOwnProperty('password') && pdu['password'] != null) {
+				let password = pdu['password'];
 				if (username == this.smppConfig['replyUsername'] && password == this.smppConfig['replyPassword']) securityPermission = 'reply';
 				if (username == this.smppConfig['reportUsername'] && password == this.smppConfig['reportPassword']) securityPermission = 'report';
 				if (username == this.smppConfig['transmitterUsername'] && password == this.smppConfig['transmitterPassword']) securityPermission = 'transmitter';

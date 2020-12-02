@@ -12,8 +12,14 @@ class SmppServer {
 
 	openConnection() {
 		this.server = this.smpp.createServer((session) => {
-			let smppType = this.security.validateSmppConnection(session);
-			if (smppType) this.createSession(smppType);
+			session.on('bind_receiver', (pdu) => {
+				let smppType = this.security.validateSmppConnection(pdu);
+				if (smppType) this.createSession(smppType, session);
+			});
+			session.on('bind_transmitter', (pdu) => {
+				let smppType = this.security.validateSmppConnection(pdu);
+				if (smppType) this.createSession(smppType, session);
+			});
 		});
 
 		this.server.listen(this.port, this.host, () => {
@@ -21,17 +27,20 @@ class SmppServer {
 		});
 	}
 
-	createSession(type) {
+	createSession(type, session) {
 		switch (type) {
 			case 'reply':
-				this.replySmpp.setSession(this.session);
+				this.replySmpp.setSession(session);
 				this.replySmpp.start();
+				break;
 			case 'report':
-				this.reportSmpp.setSession(this.session);
+				this.reportSmpp.setSession(session);
 				this.reportSmpp.start();
+				break;
 			case 'transmitter':
-				this.transmitterSmpp.setSession(this.session);
+				this.transmitterSmpp.setSession(session);
 				this.transmitterSmpp.start();
+				break;
 		}
 	}
 }
