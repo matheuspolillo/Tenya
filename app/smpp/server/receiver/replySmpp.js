@@ -52,7 +52,7 @@ class ReplySmpp {
 	send(reply) {
 		this.session.send(new this.smpp.PDU('deliver_sm', {
 			receipted_message_id: reply['queue_id'],
-			source_addr: `${reply['number']}`,
+			source_addr: reply['number'],
 			short_message: {
 				message: `text: ${reply['text']} date: ${reply['date']}`
 			}

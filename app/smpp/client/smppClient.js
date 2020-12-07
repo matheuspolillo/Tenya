@@ -84,8 +84,10 @@ class SmppClient {
 			this.connection['report'].bind_receiver(connectionConfig);
 		});
 
-		this.connection['report'].on('deliver_sm', (pdu) => {
-			console.log(pdu);
+		this.connection['report'].on('deliver_sm', async (pdu) => {
+			let saveResult = await Loader.export('mongoQuery').saveReport(pdu);
+			if (saveResult) Logger.log('SmppClientLog', 'Report saved');
+			else Logger.log('SmppClientLog', 'Unable to save report');
 		});
 
 		this.connection['report'].on('close', () => {

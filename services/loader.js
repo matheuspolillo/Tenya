@@ -20,6 +20,8 @@ class Loader {
 		this.smppClient = require(`${__base}/app/smpp/client/smppClient.js`);
 		this.validator = require(`${__base}/services/validator.js`);
 		this.replyController = require(`${__base}/app/api/controller/replyController.js`);
+		this.reportGateway = require(`${__base}/app/gateway/report.js`);
+		this.sendGateway = require(`${__base}/app/gateway/send.js`);
 		this.module = {
 			logger: null,
 			server: null,
@@ -40,7 +42,9 @@ class Loader {
 			transmitterSmpp: null,
 			smppClient: null,
 			validator: null,
-			replyController: null
+			replyController: null,
+			reportGateway: null,
+			sendGateway: null
 		};
 	}
 

@@ -2,6 +2,7 @@
 	"types": {
 		"ServerLog": "#0099FF",
 		"DatabaseLog": "#FFAE00",
+		"GatewayLog": "#6E002E",
 		"SmppServerLog": "#278F67",
 		"SmppClientLog": "#3E4f66",
 		"ReplyWorkerLog": "#502473",

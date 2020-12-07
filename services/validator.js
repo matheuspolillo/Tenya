@@ -49,9 +49,17 @@ class Validator {
 				if (result.n >= 1 && result.ok >= 1 && result.n == result.ok) {
 					validate['ok'] = true;
 					validate['status'] = 201;
-					validate['response'] = 'Reply created';
+					validate['response'] = 'ok';
 				}
 				break;
+			case 'update':
+				if (result.n >= 1 && result.ok >= 1 && result.n == result.ok) {
+					if (result.nModified >= 1 && result.nModified == result.n && result.nModified == result.ok) {
+						validate['ok'] = true;
+						validate['status'] = 201;
+						validate['response'] = 'ok';
+					}
+				}
 		}
 
 		return validate

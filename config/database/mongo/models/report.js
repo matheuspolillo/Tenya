@@ -11,7 +11,8 @@ class Report {
 			report_response: String,
 			report_status: Number,
 			status: Number,
-			created_at: Date
+			created_at: Date,
+			done_date: Date
 		});
 		ReportSchema.index({ queue_id: 1 });
 		ReportSchema.index({ status: 1 });
