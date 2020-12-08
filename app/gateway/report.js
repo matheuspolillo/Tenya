@@ -10,7 +10,6 @@ class Report {
 				let report = {
 					status: 0,
 					type: 'report',
-					done_date: message['status'] == 1 ? moment.tz(process.env.MOMENT_TIMEZONE).format('YYYY-MM-DD HH:mm:ss') : null,
 					gateway_status: message['status'],
 					gateway_status_description: message['status'] == 1 ? 'SENT' : 'ERROR'
 				};

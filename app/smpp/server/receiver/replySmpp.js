@@ -38,8 +38,7 @@ class ReplySmpp {
 				};
 				this.send(replyObj);
 			});
-
-			this.workerConfig.workerSendStatus = false;	
+	
 			this.workerConfig.logSendCount = 0;
 		} else {
 			if (this.workerConfig.logSendCount < 3) {
@@ -47,6 +46,7 @@ class ReplySmpp {
 				this.workerConfig.logSendCount++;
 			}
 		}
+		this.workerConfig.workerSendStatus = false;
 	}
 
 	send(reply) {
@@ -60,18 +60,18 @@ class ReplySmpp {
 	}
 
 	replyWorker() {
-		if (!this.workerConfig.workerSendStatus) {
-			this.workerConfig.workerSendStatus = true;
-			setInterval(async () => {
+		setInterval(async () => {
+			if (!this.workerConfig.workerSendStatus) {
+				this.workerConfig.workerSendStatus = true;
 				await this.prepareBatch();
-			}, this.workerConfig.workerSendInterval * 1000);
-		}
-		if (!this.workerConfig.workerSupplyStatus) {
-			this.workerConfig.workerSupplyStatus = true;
-			setInterval(async () => {
+			}
+		}, this.workerConfig.workerSendInterval * 1000);
+		setInterval(async () => {
+			if (!this.workerConfig.workerSupplyStatus) {
+				this.workerConfig.workerSupplyStatus = true;
 				await this.supplyMemory();
-			}, this.workerConfig.workerSupplyInterval * 60000);
-		}
+			}
+		}, this.workerConfig.workerSupplyInterval * 60000);
 	}
 
 	start() {

@@ -12,6 +12,9 @@ class SmppClient {
 			transmitterUsername: process.env.SMPP_CLIENT_TRANSMITTER_SYSTEM_ID,
 			transmitterPassword: process.env.SMPP_CLIENT_TRANSMITTER_PASSWORD
 		};
+		this.workerConfig = {
+			workerSendInterval: process.env.CLIENT_SEND_WORKER_INTERVAL
+		};
 	}
 
 	connect(type) {
@@ -110,6 +113,8 @@ class SmppClient {
 				addr_ton: 1,
 				addr_npi: 1
 			});
+
+			this.sendWorker();
 		});
 
 		this.connection['transmitter'].on('close', () => {
@@ -118,6 +123,28 @@ class SmppClient {
 
 		this.connection['transmitter'].on('error', () => {
 			Logger.log('ErrorLog', err);
+		});
+	}
+
+	sendWorker() {
+		setInterval(async () => {
+			let messages = await Loader.export('mongoQuery').getMessages();
+			let ids = [];
+			if (messages.length > 0) {
+				messages.forEach(message => {
+					let pdu = Loader.export('parser').parseMessageToPdu(message);
+					let sendResult = this.send(pdu);
+					// if (sendResult) ids.push(message['_id']);
+					ids.push(message['_id']);
+				});
+				await Loader.export('mongoQuery').updateMessages(ids);
+			}
+		}, this.workerConfig.workerSendInterval * 1000);
+	}
+
+	send(pdu) {
+		this.connection['transmitter'].send(new this.smpp.PDU('submit_sm', pdu), (pdu) => {
+			console.log(pdu);
 		});
 	}
 }

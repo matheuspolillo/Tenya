@@ -18,21 +18,41 @@ class Validator {
 
 	validateReqBody(reqBody, endpoint) {
 		let validate = this.buildValidateBody(false, 400, null);
+		let fields = {};
 		switch (endpoint) {
-			case '/reply/create':
-				let queueIdOk = false;
-				let numberOk = false;
-				let messageContentOk = false;
-				if (reqBody.hasOwnProperty('queueId') && reqBody['queueId'] != null) queueIdOk = true;
+			case '/reply':
+				fields['queueIdOk'] = false;
+				fields['numberOk'] = false;
+				fields['messageContentOk'] = false;
+				if (reqBody.hasOwnProperty('queueId') && reqBody['queueId'] != null) fields['queueIdOk'] = true;
 				else validate['response'] = 'queueId missing';
 
-				if (reqBody.hasOwnProperty('number') && reqBody['number'] != null) numberOk = true;
+				if (reqBody.hasOwnProperty('number') && reqBody['number'] != null) fields['numberOk'] = true;
 				else validate['response'] = 'number missing';
 
-				if (reqBody.hasOwnProperty('messageContent') && reqBody['messageContent'] != null) messageContentOk = true;
+				if (reqBody.hasOwnProperty('messageContent') && reqBody['messageContent'] != null) fields['messageContentOk'] = true;
 				else validate['response'] = 'messageContent missing';
 
-				if (queueIdOk && numberOk && messageContentOk) {
+				if (fields['queueIdOk'] && fields['numberOk'] && fields['messageContentOk']) {
+					validate['ok'] = true;
+					validate['status'] = 200;
+					validate['response'] = '';
+				}
+				break;
+			case '/send':
+				fields['laOk'] = false;
+				fields['numberOk'] = false;
+				fields['messageOk'] = false;
+				if (reqBody.hasOwnProperty('la') && reqBody['la'] != null) fields['laOk'] = true;
+				else validate['response'] = 'la missing';
+
+				if (reqBody.hasOwnProperty('number') && reqBody['number'] != null) fields['numberOk'] = true;
+				else validate['response'] = 'number missing';
+
+				if (reqBody.hasOwnProperty('message') && reqBody['message'] != null) fields['messageOk'] = true;
+				else validate['response'] = 'message missing';
+				
+				if (fields['laOk'] && fields['numberOk'] && fields['messageOk']) {
 					validate['ok'] = true;
 					validate['status'] = 200;
 					validate['response'] = '';

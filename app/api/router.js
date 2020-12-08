@@ -3,7 +3,8 @@ class Router {
 		this.api = null;
 		this.appVersion = require(`${__base}/package.json`).version;
 		this.controllers = {
-			replyController: Loader.export('replyController')
+			replyController: Loader.export('replyController'),
+			messageController: Loader.export('messageController')
 		};
 	}
 
@@ -12,7 +13,8 @@ class Router {
 		
 		this.api.get('/ping', (req, res) => { res.send(200, 'pong'); });
 		this.api.get('/version', (req, res) => { res.send(200, this.appVersion) });
-		this.api.post('/reply/create', this.controllers.replyController.createGatewayReply);
+		this.api.post('/send', this.controllers.messageController.createMessage);
+		this.api.post('/reply', this.controllers.replyController.createGatewayReply);
 	}
 }
 

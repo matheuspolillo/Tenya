@@ -20,6 +20,24 @@ class Parser {
 		
 		return pduMessageSplitted;
 	}
+
+	parsePduSendMessage(pduMessage) {
+		let pduMessageSplitted = {};
+		pduMessageSplitted['queue_id'] = pduMessage.slice(pduMessage.indexOf('queue_id:') + 10, pduMessage.indexOf('text:') - 1);
+		pduMessageSplitted['text'] = pduMessage.slice(pduMessage.indexOf('text:') + 6);
+		
+		return pduMessageSplitted;
+	}
+
+	parseMessageToPdu(message) {
+		let pdu = {
+			destination_addr: message.destination_number,
+			source_addr: message.la,
+			short_message: { message: `queue_id: ${message._id} text: ${message.message_content}` }
+		};
+
+		return pdu;
+	}
 }
 
 module.exports = Parser;

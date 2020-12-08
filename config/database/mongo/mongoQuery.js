@@ -28,6 +28,42 @@ class MongoQuery {
 		};
 	}
 
+	async createMessage(message) {
+		this.setConnection('smppServer');
+		let messageObj = {
+			la: message['la'],
+			destination_number: message['number'],
+			message_content: message['message'],
+			queued_at: moment.tz(process.env.MOMENT_TIMEZONE).format('YYYY-MM-DD HH:mm:ss'),
+			sent_at: null,
+			status: 0,
+			gateway_status: null
+		};
+
+		let result = await this.Mongo.getModel('Queue').collection.insertOne(messageObj);
+
+		return {
+			result: result.result,
+			id: result.insertedId
+		};
+	}
+
+	async updateGatewayMessages(message, id) {
+		this.setConnection('smppServer');
+		let result = await this.Mongo.getModel('FakeGateway').collection.updateOne({ _id: id }, { $set: message });
+		let checked = Loader.export('validator').validateMongoReturn(result.result, 'update');
+
+		return checked['ok'];
+	}
+
+	async updateMessages(ids) {
+		this.setConnection('smppServer');
+		let result = await this.Mongo.getModel('Queue').collection.updateMany({ _id: { $in: ids } }, { $set: { status: 1 } });
+		let checked = Loader.export('validator').validateMongoReturn(result.result, 'update');
+
+		return checked['ok'];
+	}
+
 	async createReport(report, id) {
 		this.setConnection('smppServer');
 		let result = await this.Mongo.getModel('FakeGateway').collection.updateOne({ _id: id }, { $set: report });
@@ -56,14 +92,34 @@ class MongoQuery {
 		return reports;
 	}
 
-	async getFinishedMessages(limit) {
+	async getFinishedMessages() {
 		this.setConnection('smppServer');
-		let sentMessages = await this.Mongo.getModel('FakeGateway').find({ status: { $in: [1, 2] }, type: 'message' }).limit(limit);
+		let sentMessages = await this.Mongo.getModel('FakeGateway').find({ status: { $in: [1, 2] }, type: 'message' });
 		let ids = sentMessages.map(sentMessage => sentMessage._id);
 
 		await this.Mongo.getModel('FakeGateway').updateMany({ _id: { $in: ids } }, { $set: { status: 3 } });
 
 		return sentMessages;
+	}
+
+	async getMessages() {
+		this.setConnection('smppServer');
+		let messages = await this.Mongo.getModel('Queue').find({ status: 0 });
+		let ids = messages.map(message => message._id);
+
+		await this.Mongo.getModel('Queue').updateMany({ _id: { $in: ids } }, { $set: { status: 99 } });
+
+		return messages;
+	}
+
+	async getGatewayMessages() {
+		this.setConnection('smppServer');
+		let messages = await this.Mongo.getModel('FakeGateway').find({ status: 0, type: 'message' });
+		let ids = messages.map(message => message._id);
+
+		await this.Mongo.getModel('FakeGateway').updateMany({ _id: { $in: ids } }, { $set: { status: 99 } });
+
+		return messages;
 	}
 
 	async saveReply(pdu) {
@@ -95,6 +151,25 @@ class MongoQuery {
 		};
 
 		let result = await this.Mongo.getModel('Report').collection.insertOne(reportObj);
+		let checked = Loader.export('validator').validateMongoReturn(result.result, 'insert');
+
+		return checked['ok'];
+	}
+
+	async saveMessage(pdu) {
+		this.setConnection('smppServer');
+		let parsedPduMessage = Loader.export('parser').parsePduSendMessage(pdu['short_message']['message']);
+		let messageObj = {
+			queue_id: parsedPduMessage['queue_id'],
+			number: pdu['destination_addr'],
+			la: pdu['source_addr'],
+			message_content: parsedPduMessage['text'],
+			created_at: moment.tz(process.env.MOMENT_TIMEZONE).format('YYYY-MM-DD HH:mm:ss'),
+			status: 0,
+			type: 'message'
+		};
+
+		let result = await this.Mongo.getModel('FakeGateway').collection.insertOne(messageObj);
 		let checked = Loader.export('validator').validateMongoReturn(result.result, 'insert');
 
 		return checked['ok'];

@@ -44,7 +44,6 @@ class ReportSmpp {
 				this.send(reportObj);
 			});
 
-			this.workerConfig.workerSendStatus = false;	
 			this.workerConfig.logSendCount = 0;
 		} else {
 			if (this.workerConfig.logSendCount < 3) {
@@ -52,6 +51,7 @@ class ReportSmpp {
 				this.workerConfig.logSendCount++;
 			}
 		}
+		this.workerConfig.workerSendStatus = false;
 	}
 
 	send(report) {
@@ -66,18 +66,18 @@ class ReportSmpp {
 
 	reportWorker() {
 		this.supplyMemory();
-		if (!this.workerConfig.workerSendStatus) {
-			this.workerConfig.workerSendStatus = true;
-			setInterval(() => {
+		setInterval(() => {
+			if (!this.workerConfig.workerSendStatus) {
+				this.workerConfig.workerSendStatus = true;
 				this.prepareBatch();
-			}, this.workerConfig.workerSendInterval * 1000);
-		}
-		if (!this.workerConfig.workerSupplyStatus) {
-			this.workerConfig.workerSupplyStatus = true;
-			setInterval(() => {
+			}
+		}, this.workerConfig.workerSendInterval * 1000);
+		setInterval(() => {
+			if (!this.workerConfig.workerSupplyStatus) {
+				this.workerConfig.workerSupplyStatus = true;
 				this.supplyMemory();
-			}, this.workerConfig.workerSupplyInterval * 1000);
-		}
+			}
+		}, this.workerConfig.workerSupplyInterval * 1000);
 		setInterval(async () => {
 			await Loader.export('reportGateway').generateCallback();
 		}, this.workerConfig.workerReportInterval * 1000);
